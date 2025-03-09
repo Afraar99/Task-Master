@@ -43,7 +43,8 @@ function updateToDoList() {
 function createToDoItem(todo, todoIndex) {
   const todoId = "todo-" + todoIndex;
   const todoLI = document.createElement("li");
-  const todoText = todo.text || todo; // Handle both new object format and legacy string format
+  // Fix here - properly handle todo text whether it's a string or object with text property
+  const todoText = typeof todo === "object" && todo !== null ? todo.text : todo;
   todoLI.className = "todo";
   todoLI.style.animationDelay = todoIndex * 0.05 + "s"; // Staggered animation
   todoLI.innerHTML = `
@@ -80,12 +81,30 @@ function createToDoItem(todo, todoIndex) {
   });
   const checkbox = todoLI.querySelector("input");
   checkbox.addEventListener("change", () => {
-    allTodos[todoIndex].completed = checkbox.checked;
+    // Make sure to handle both object and string formats
+    if (
+      typeof allTodos[todoIndex] === "object" &&
+      allTodos[todoIndex] !== null
+    ) {
+      allTodos[todoIndex].completed = checkbox.checked;
+    } else {
+      // Convert string format to object format
+      allTodos[todoIndex] = {
+        text: allTodos[todoIndex],
+        completed: checkbox.checked,
+      };
+    }
     saveTodos();
   });
-  checkbox.checked = todo.completed;
+
+  // Check if the todo is an object with a completed property
+  if (typeof todo === "object" && todo !== null && "completed" in todo) {
+    checkbox.checked = todo.completed;
+  }
+
   return todoLI;
 }
+
 function deleteToDoItem(todoIndex) {
   allTodos = allTodos.filter((_, i) => i !== todoIndex);
   saveTodos();
