@@ -123,3 +123,19 @@ input[type="checkbox"]:checked ~ .todo-text {
   text-decoration: line-through;
   color: var(--secondary-color);
 }
+@media (max-width: 500px) {
+  html {
+    font-size: 12pt;
+  }
+  #add-button {
+    position: unset;
+    width: 100%;
+    margin-top: 10px;
+    padding: 15px;
+    height: auto;
+  }
+  h1 {
+    margin-top: 50px;
+    font-size: 15vw;
+  }
+}
